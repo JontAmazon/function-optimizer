@@ -1,4 +1,4 @@
-function lamb = linesearch(x) %TODO = vilka input args?
+function lamb = linesearch(x,d,f) %TODO = vilka input args?
     
 
 
