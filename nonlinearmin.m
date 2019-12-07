@@ -20,7 +20,6 @@ function x = nonlinearmin(f,start,method,tol,printout)
        end
        x = y;
        o_iter= o_iter +1;
-
        if grad(x)<tol
            break
        end
