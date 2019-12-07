@@ -16,11 +16,13 @@ function x = nonlinearmin(f,start,method,tol,printout)
           y = y + p;
           D = quasi_newton(method,p,q);
           iter = iter +1;
-          iter_print(iter,y,p,f(y),norm(grad(f,y)),ls_iters,lambda);
+          if printout
+            iter_print(iter,y,p,f(y),norm(grad(f,y)),ls_iters,lambda);
+          end
        end
        x = y;
        o_iter= o_iter +1;
-       if grad(x)<tol
+       if norm(grad(x))<tol % && hessian = positive definite!
            break
        end
     end
