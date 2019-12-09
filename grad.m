@@ -12,3 +12,6 @@ for j = 1:length(x)
    fminus = feval(F,xminus);
    g(j,1) = ( fplus - fminus )/2.e-8;
 end
+
+
+% 'Jonte was here'
