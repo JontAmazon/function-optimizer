@@ -13,5 +13,3 @@ for j = 1:length(x)
    g(j,1) = ( fplus - fminus )/2.e-8;
 end
 
-
-% 'Jonte was here'
