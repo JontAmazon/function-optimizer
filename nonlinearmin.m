@@ -9,6 +9,7 @@ iter = 0;
 max_iters = 50;
 while iter < max_iters
     iter = iter + 1; 
+    disp(['Iteration # ', num2str(iter)])    
     y = x;
     D = eye(n);
 
@@ -30,8 +31,8 @@ while iter < max_iters
     %och som printar vilket som gav utslag.
     %   [EV flytta upp detta till f?rst i loopen].
     if norm(grad(f,x)) < tol
-        break
-    end
+        return
+    end    
 end
 disp(['Did not converge in ', num2str(max_iters), ' iterations.'])
 end
