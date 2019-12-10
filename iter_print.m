@@ -1,17 +1,15 @@
-function iter_print(iter,x,p,f_x,norm_grad,ls_iters,lambda)
+function iter_print(iter,x,step_size,f_val,norm_grad,ls_iters,lambda)
 
-fprintf('%12.4f %12.1f %12.4f %12.4f %12.4f %12.4f %12.4f\n',...
-        'iteration', 'x','step size')
+fprintf('%12s %12s %12s %12s %12s %12s %12s\n',...
+        'iter', 'x', 'step size', 'f(x)', '||grad||', 'ls_iters', 'lambda')
+    
+fprintf('%12.0f %12.4f %12.3f %12.4f %12.2f %12.0f %12.3f\n',...
+        iter,x(1),step_size,f_val,norm_grad,ls_iters,lambda)
+
 if length(x)>1
-    fprintf('%12.4f %12.1f %12.4f %12.4f %12.4f %12.4f %12.4f\n',...
-        iter,x(1),p,f_x,norm_grad,ls_iters,lambda),
-    for dim = 2:length(x)
-        fprintf('%12.4f %12.1f %12.4f %12.4f %12.4f %12.4f %12.4f\n',...
-        '',x(dim),'','','','','');
+    for i = 2:length(x)
+        fprintf('%12.4s %12.3f\n', ...
+        ' ', x(i));
     end
 end
-
-disp('\n')
 end
-
-          
