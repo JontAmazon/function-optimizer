@@ -1,6 +1,6 @@
 function [lamb, ls_iters] = linesearch(f,x,d)
 ls_iters = 1;
-lamb = 1;
+lamb = 1; %initial "guess".
 
 %{
 OPTIONS:
@@ -27,14 +27,36 @@ if option == 2
     
     F = @(lambda) f(x + lambda.*d);
     T = @(lambda) F(0) + epsilon*lambda*grad(f,x)'*d;
+%     "To calculate the search directions you may use the numerical
+%     differentiation in the file grad.m. Do not use it directly in the 
+%     line search subroutine as the fixed precision in grad.m may not be 
+%     enough there in some cases."                                          --> Hmm, OK s?h?r?
+    % --> EV Alternative: After initiating lamb (below), do:
+%     F_prime = (F(lamb/100) - F(0)) / (lamb/100);
+%     T = @(lambda) F(0) + epsilon*lambda*F_prime;
+
+
+    %Initialize lamb to something appropriate.
+    while abs(F(0)-F(lamb)) < 1e-1
+        lamb = lamb * 256;
+    end
+    while isinf(F(lamb)) || F(0) < F(lamb)
+        lamb = lamb / 512;
+    end
     
-    lamb = 1; %initial "guess".
     max_iters = 1000;
     for i = 1:max_iters
         F1 = F(lamb);
         F2 = F(alpha*lamb);
         T1 = T(lamb);
         T2 = T(alpha*lamb);
+        if isinf(T1)
+            T1 = F(0); %(lite os?ker p? detta).
+        end
+        if isinf(T2)
+            T2 = F(0);
+        end
+            
         if F1 > T1
             lamb = lamb / alpha;
         elseif T2 > F2
@@ -62,6 +84,7 @@ if option == 3
         ls_iters = ls_iters + 1;
     end
 end
+
 
 % Error check: did linesearch work?
 if isnan(f(x+lamb*d))

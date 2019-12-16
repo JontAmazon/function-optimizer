@@ -36,9 +36,9 @@ end
 if option == 4
     %Rosenbrock, min at x=[1; 1].
     fun = @rosenbrock;
-    [x, f_history, lamb_history] = nonlinearmin(fun, [1.01; 1.01], 'BFGS', 1e-6, 1);
+    [x, f_history, lamb_history] = nonlinearmin(fun, [200; 2000], 'BFGS', 1e-6, 1);
     disp(fun(x))
-    disp(x')    
+    disp(x')
 end
 
 

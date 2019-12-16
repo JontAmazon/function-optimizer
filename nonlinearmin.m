@@ -31,6 +31,7 @@ while iter < max_iters
     for j = 1:n
         d = -D*grad(f,y);
         [lambda, ls_iters] = linesearch(f,y,d);
+        %disp(['ls_iters: ', num2str(ls_iters)])
         lamb_history(iter) = lambda;
         p = lambda*d;
         q = grad(f,y+p)-grad(f,y);
