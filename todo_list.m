@@ -1,7 +1,7 @@
 %{
-1. Test line search with f(x) = (1 - 10^a*x)^2
+1. Implement Golden Section method in linesearch.m
 
-2. Test line search with test_func.m
+2. Test out Golden Section !!!
 
 3. Minimize rosenbrock.m
     Try many different starting points.

@@ -14,7 +14,7 @@ option = 4;
 if option == 1
     %Some function, min at x=0.
     fun = @(x) x^2;
-    x = nonlinearmin(fun, [0.3], 'DFP', 0.001, 0);
+    x = nonlinearmin(fun, [0.3], 'DFP', 1e-6, 0);
     disp(fun(x))
     disp(x')    
 end
@@ -35,13 +35,9 @@ end
 if option == 4
     %Rosenbrock, min at x=[1; 1].
     fun = @rosenbrock;
-    x = nonlinearmin(fun, [200; 200], 'BFGS', 1e-6, 1);
-    disp(fun(x))
+    x = nonlinearmin(fun, [200; 200], 'BFGS', 1e-8, 1);
+    disp(['f_min: ', num2str(fun(x)), '      found at x:'])
     disp(x')
 end
-
-
-
-
 
 

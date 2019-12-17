@@ -7,9 +7,9 @@ OPTIONS:
 1. exact linesearch (nja)
 2. Armijo
 3. Newton (nja)
+4. Golden Section     [TODO !!!]
 
     %NOTE: tror egentligen vi f?r g?ra VILKEN SOM HELST, tex Wolf.
-    %NOTE: we can't assume f to be unimodal, so no Golden section.
 %}
 option = 2;
 

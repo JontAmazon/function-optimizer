@@ -5,30 +5,27 @@
 function x = nonlinearmin(f, start, method, tol, printout)
 x = start;
 n = length(x);
+x_history = zeros(n, 1);
+
+count_not_pos_def = 0; %statistics for D.
+count_pos_def = 0;     %statistics for D.
 
 iter = 0;
 max_iters = 5000;
-
-count_not_pos_def = 0; %statistics.
-count_pos_def = 0;     %statistics.
-
 while iter < max_iters
     iter = iter + 1; 
+    x_history(:, iter) = x;
     disp(['Iteration # ', num2str(iter)])
-
-    % Jonte:
-    % TODO = fixa history for x  :)
-    % TODO = skriv om inputten till funktionen nedan.
-    %        x_k ?r x_history(iter)
-    %        x_kmN = x_history(iter - 10)
-    stop = checkStoppingConditions(f, x_k, x_km1, x_kmN, tol);
-    if stop == 1
-        disp('Local min found!')
-        disp('Not pos def vs. pos def:')
-        disp(count_not_pos_def)
-        disp(count_pos_def)
-    end
     
+    % Check stopping conditions.
+    if check_stopping_conditions(f, x_history, tol)
+        disp(' ')
+        disp('Statistics for D:')
+        disp(['   ~pos def: ', num2str(count_not_pos_def)])
+        disp(['    Pos def: ', num2str(count_pos_def)])
+        return
+    end
+
     y = x;
     D = eye(n);
     for j = 1:n
@@ -56,16 +53,17 @@ while iter < max_iters
             iter_print(j,y,norm(p),f(y),norm(grad(f,y)),ls_iters,lambda);
         end
     end
-    x = y;    
+    x = y;
 end
 disp(['Did not converge in ', num2str(max_iters), ' iterations.'])
 end
 
 
 
-% OLD STOPPING CONDITION (only ||grad||):
-%     %EV todo = en funktion checkStoppingConditions() med flera olika tester, 
-%     %och som printar vilket som gav utslag.
+
+
+
+%     %OLD STOPPING CONDITION (only ||grad||):
 %     if norm(grad(f,x)) < tol
 %         [~, flag] = chol(D); %Necessary? Checking that D is pos. def. doesn't
 %         if flag == 0         %doesn't seem to be needed, from tries on sin(x)).
