@@ -2,8 +2,6 @@
 
 function alpha = main2(x)
 
-problem = 4; %Set the wanted problem
-
 %PROBLEM
 %
 % min(e^(x1*x2*x3*x4*x5)) subject to
@@ -20,6 +18,4 @@ alpha = max(0, (x(1)^2 + x(2)^2 + x(3)^2 + x(4)^2 + x(5)^2 - 10)) + ...
   max(0, (x(1)^3 + x(3)^3 + 1));
 
 %Return the auxiliary function
-
-
 
