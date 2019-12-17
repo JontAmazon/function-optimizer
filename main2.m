@@ -1,6 +1,6 @@
 % Solve task 2 (penalty problem).
 
-function alpha = main2(x)
+function auxiliary = main2()
 
 %PROBLEM
 %
@@ -13,9 +13,14 @@ function alpha = main2(x)
 % The penalty function used is alpha(x) = sum_{1 to m} max_{over S} (0, g_k(x))
 % with S = {g_k(x) < 0}.
 
-alpha = max(0, (x(1)^2 + x(2)^2 + x(3)^2 + x(4)^2 + x(5)^2 - 10)) + ...
+f = @(x) e^(x(1)*x(2)*x(3)*x(4)*x(5));
+
+alpha = @(x) max(0, (x(1)^2 + x(2)^2 + x(3)^2 + x(4)^2 + x(5)^2 - 10)) + ...
   max(0, (x2*x3 - 5*x4*x5)) + ...
   max(0, (x(1)^3 + x(3)^3 + 1));
 
 %Return the auxiliary function
+auxiliary = @(x) f + alpha;
+
+
 
