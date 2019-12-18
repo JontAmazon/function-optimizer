@@ -1,24 +1,39 @@
 function [lamb, ls_iters] = linesearch(f,x,d)
-ls_iters = 1;
-lamb = 1; %initial "guess".
+ls_iters = 0;
 
 %{
 OPTIONS:
-1. exact linesearch (nja)
+1. Golden section (10 iterations)
 2. Armijo
-3. Newton (nja)
-4. Golden Section     [TODO !!!]
-
-    %NOTE: tror egentligen vi f?r g?ra VILKEN SOM HELST, tex Wolf.
 %}
-option = 2;
+option = 1;
 
-% 1. Exact linesearch.
-if option == 1                     %(DOESN'T WORK)
-    f_line = @(t) f(x + t(1).*d);  %^correct implementation?
-    lamb = fminsearch(f_line, x);  %^anyway... not important...
-    lamb = lamb(1);
+% 1. Golden section
+if option == 1
+    F = @(lambda) f(x + lambda.*d);
+    a = 0;
+    
+    %Initialize b to something appropriate.
+    b = 1;
+    while isinf(F(b)) || F(a)<F(b) %If F'(0) is drastic we require
+        b = b / 16;                %lamb to be small.
+    end
+    while abs(F(a)-F(b)) < 1e-1 %If F' is near constant, take a big step.
+        b = b * 16;
+        if F(a) < F(b)
+            b = b / 16;
+            break;
+        end
+    end
+
+    %Golden section algorithm.
+    ls_iters = 10;
+    for i = 1:ls_iters
+        [a, b] = golden_section(F, a, b);
+    end
+    lamb = (a+b)/2;
 end
+
 
 % 2. Armijo.
 if option == 2
@@ -30,28 +45,36 @@ if option == 2
 %     "To calculate the search directions you may use the numerical
 %     differentiation in the file grad.m. Do not use it directly in the 
 %     line search subroutine as the fixed precision in grad.m may not be 
-%     enough there in some cases."                                          --> Hmm, OK s?h?r?
-    % --> EV Alternative: After initiating lamb (below), do:
+%     enough there in some cases.                                       --> Hmm, OK s?h?r? T = blabla*grad()
+    % --> EVEV Alternative: After initiating lamb (as below), do:       --> B?TTRE: golden section!!!
 %     F_prime = (F(lamb/100) - F(0)) / (lamb/100);
 %     T = @(lambda) F(0) + epsilon*lambda*F_prime;
 
 
     %Initialize lamb to something appropriate.
-    while abs(F(0)-F(lamb)) < 1e-1
-        lamb = lamb * 256;
+    lamb = 1;
+    while isinf(F(lamb)) || F(0)<F(lamb) %If F'(0) is drastic we require
+        lamb = lamb / 16;                %lamb to be small.
     end
-    while isinf(F(lamb)) || F(0) < F(lamb)
-        lamb = lamb / 512;
+    while abs(F(0)-F(lamb)) < 1e-1 %If F' is near constant, take a big step.
+        lamb = lamb * 16;
+        if F(0) < F(lamb)
+            lamb = lamb / 16;
+            break;
+        end
     end
-    
+        
+    %Armijo algorithm.
     max_iters = 1000;
     for i = 1:max_iters
+        ls_iters = ls_iters + 1;
+        
         F1 = F(lamb);
-        F2 = F(alpha*lamb);
         T1 = T(lamb);
+        F2 = F(alpha*lamb);
         T2 = T(alpha*lamb);
         if isinf(T1)
-            T1 = F(0); %(lite os?ker p? detta).
+            T1 = F(0); %(lite os?ker p? detta, men verkar funka).
         end
         if isinf(T2)
             T2 = F(0);
@@ -64,29 +87,17 @@ if option == 2
         else
             return %success.
         end
-        ls_iters = ls_iters + 1;
-    end
-    
-    if i == max_iters
-        disp('Armijo didnt find a lambda in 1000 iterations...')
-        disp('...now what should we do? ...Newton? Exact linesearch?')
-        disp('...Idk... Lets see if it comes to this...')
-    end
+        
+        if i == max_iters
+            error('Armijo didnt find a lambda in 1000 iterations...') %never occurs.
+            %error('...now what should we do? ...Newton? Exact linesearch?')
+            %error('...Idk... Lets see if it comes to this...')
+        end
+    end    
 end        
    
-% 3. Newton. [FORGET THIS ONE, it's way too expensive].
-if option == 3
-    for i = 1:10
-        F_prim = d'*grad(f,x+lamb*d);
-        F_bis = d'*hessian(f,x+lamb*d)*d;
-        lamb = lamb - F_prim/F_bis;
-        %stopping crit.
-        ls_iters = ls_iters + 1;
-    end
-end
 
-
-% Error check: did linesearch work?
+% Final error check: did linesearch work?
 if isnan(f(x+lamb*d))
     error('Bad job of the line search! (f diverged)')
 end
@@ -95,3 +106,24 @@ if f(x+lamb*d) > f(x)
 end
 
 end
+
+% Skip:
+%{
+% 3. Exact linesearch.
+if option == 1                     %(DOESN'T WORK)
+    f_line = @(t) f(x + t(1).*d);  %^correct implementation?
+    lamb = fminsearch(f_line, x);  %^anyway... not important...
+    lamb = lamb(1);
+end
+
+% 4. Newton. [FORGET THIS ONE, it's way too expensive].
+if option == 3
+    for i = 1:10
+        F_prim = d'*grad(f,x+lamb*d);
+        F_bis = d'*hessian(f,x+lamb*d)*d;
+        lamb = lamb - F_prim/F_bis;
+        %EV todo = stopping crit.
+        ls_iters = ls_iters + 1;
+    end
+end
+%}

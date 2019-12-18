@@ -15,14 +15,14 @@ max_iters = 5000;
 while iter < max_iters
     iter = iter + 1; 
     x_history(:, iter) = x;
-    disp(['Iteration # ', num2str(iter)])
+    %disp(['Iteration # ', num2str(iter)])
     
     % Check stopping conditions.
     if check_stopping_conditions(f, x_history, tol)
-        disp(' ')
-        disp('Statistics for D:')
-        disp(['   ~pos def: ', num2str(count_not_pos_def)])
-        disp(['    Pos def: ', num2str(count_pos_def)])
+        disp(['Nbr of iterations: ', num2str(iter)])
+        %disp('Statistics for D:')
+        %disp(['   ~pos def: ', num2str(count_not_pos_def)])
+        %disp(['    Pos def: ', num2str(count_pos_def)])
         return
     end
 
@@ -37,7 +37,7 @@ while iter < max_iters
         y = y + p;
         D = quasi_newton(method,p,q,D);
         % ________________________________________________________________
-        % [CHECKING IF ALL D ARE POS. DEF.] (MAYBE necessary?)
+        % [CHECKING IF ALL D ARE POS. DEF.] (PROBABLY NOT NECESSARY?)
         % According to p. [TODO] they should be, so Idk if should check
         % this and doing (D=D+epsilon*I) for incrementing epsilons when not.
         % Rosenbrock, x0=[200;200] ==> D was NOT pos. def. 15/5000 times.
@@ -58,19 +58,3 @@ end
 disp(['Did not converge in ', num2str(max_iters), ' iterations.'])
 end
 
-
-
-
-
-
-%     %OLD STOPPING CONDITION (only ||grad||):
-%     if norm(grad(f,x)) < tol
-%         [~, flag] = chol(D); %Necessary? Checking that D is pos. def. doesn't
-%         if flag == 0         %doesn't seem to be needed, from tries on sin(x)).
-%             disp('Local min found!')
-%             disp('Not pos def vs. pos def:')
-%             disp(count_not_pos_def)
-%             disp(count_pos_def)
-%             return            
-%         end
-%     end    
