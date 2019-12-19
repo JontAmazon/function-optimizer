@@ -19,7 +19,7 @@ while iter < max_iters
     
     % Check stopping conditions.
     if check_stopping_conditions(f, x_history, tol)
-        disp(['Nbr of iterations: ', num2str(iter)])
+        disp(['Nbr of iterations:  ', num2str(iter)])
         %disp('Statistics for D:')
         %disp(['   ~pos def: ', num2str(count_not_pos_def)])
         %disp(['    Pos def: ', num2str(count_pos_def)])

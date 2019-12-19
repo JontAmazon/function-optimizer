@@ -20,7 +20,7 @@ f_k = f(x_k);
 if norm(grad(f,x_k)) < tol1
     %EV Check that D is pos. def.? But didn't seem needed from sin(x) test.
     stop = 1;
-    disp('Stop iteration.  ||grad(f,x)|| < tol.  Local min found!')
+    disp('Local min found!    ||grad(f,x)|| < tol')
     %pause(3)
 end
 
@@ -30,7 +30,7 @@ if len > 1
     f_km1 = f(x_km1);
     if norm(x_k - x_km1) / norm(x_km1) < tol2
         stop = 1;
-        disp('Stop iteration.  ||x_k - x_k-1|| / ||x_k-1|| < tol  Local min found!')
+        disp('Local min found!    ||x_k - x_k-1|| / ||x_k-1|| < tol')
         %pause(3)
     end
 end
@@ -39,7 +39,7 @@ end
 if len > 1
     if abs(f_k - f_km1) / abs(f_km1) < tol3
         stop = 1;
-        disp('Stop iteration.  |f_k - f_k-1| / |f_k-1| < tol  Local min found!')
+        disp('Local min found!    |f_k - f_k-1| / |f_k-1| < tol')
         %pause(3)
     end
 end
@@ -51,7 +51,7 @@ if len > N
     f_kmN = f(x_kmN);
     if norm(x_k - x_kmN) < tol4
         stop = 1;
-        disp('Stop iteration.  ||x_k - x_k-N|| < tol  Local min found!')
+        disp('Local min found!    ||x_k - x_k-N|| < tol')
         %pause(3)
     end
 end
@@ -60,7 +60,7 @@ end
 if len > N
     if abs(f_k - f_kmN) < tol5
         stop = 1;
-        disp('Stop iteration.  |f_k - f_k-N| < tol  Local min found!')
+        disp('Local min found!    |f_k - f_k-N| < tol')
         %pause(3)
     end
 end

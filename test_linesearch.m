@@ -26,8 +26,12 @@ end
 % 2. Test line search with test_func.m
     %NOTE: fminunc(f, [0; 0]) didn't work!
 f = @(x) test_func(x);
+tic
 [lambda_1, ls_iters_1] = linesearch(f,[0;0],[1;0]);
+toc
+tic
 [lambda_2, ls_iters_2] = linesearch(f,[0;0],[0;1]);
+toc
 F_new_1 = f([0;0] + lambda_1.*[1;0]);
 F_new_2 = f([0;0] + lambda_2.*[0;1]);
 disp('Testing linesearch with test_func.m:')
