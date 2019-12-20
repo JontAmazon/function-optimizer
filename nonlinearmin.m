@@ -1,7 +1,6 @@
 % Minimizes the function f with either the 'DFP' or 'BFGS' quasi-Newton
 % method, as specified by the input parameter 'method'. The 'tol' parameter
-% is used in check_stopping_conditions.m, in 5 (?) different stopping
-% criterions.
+% is used in check_stopping_conditions.m, in 5 different stopping criterions.
 function x = nonlinearmin(f, start, method, tol, printout)
 x = start;
 n = length(x);
@@ -26,9 +25,8 @@ while iter < max_iters
         if isnan(d)
             d = -D*grad2(f,y,1e-5); %try with another tolerance
         end
-        if isnan(d)
-            d = -D*grad2(f,y,1e-3); %try with yet another tolerance
-        end
+        
+        %disp(norm(grad(f,y)))
         [lambda, ls_iters] = linesearch(f,y,d);
         p = lambda*d;
         q = grad(f,y+p)-grad(f,y);
@@ -36,6 +34,10 @@ while iter < max_iters
         D = quasi_newton(method,p,q,D);
         if printout
             iter_print(j,y,norm(p),f(y),norm(grad(f,y)),ls_iters,lambda);
+        end
+        if norm(grad(f,y)) < 1e-2
+            x = y;
+            return
         end
     end
     x = y;

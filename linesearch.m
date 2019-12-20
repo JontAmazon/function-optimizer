@@ -15,6 +15,8 @@ if option == 1
     
     %Initialize b to something appropriate.
     b = 1;
+    Fa = F(a); %for debugging.
+    Fb = F(b); %for debugging.
     while isinf(F(b)) || F(a)<F(b) %If F'(0) is drastic we require
         b = b / 16;                %lamb to be small.
     end
@@ -25,6 +27,9 @@ if option == 1
             break;
         end
     end
+    % TODO_1 = testa ||grad|| < tol
+    % TODO_2 = testa approximera F_prime
+    %while 
 
     %Golden section algorithm.
     ls_iters = 10;
@@ -47,12 +52,15 @@ if option == 2
 %     line search subroutine as the fixed precision in grad.m may not be 
 %     enough there in some cases.                                       --> Hmm, OK s?h?r? T = blabla*grad()
     % --> EVEV Alternative: After initiating lamb (as below), do:       --> B?TTRE: golden section!!!
-%     F_prime = (F(lamb/100) - F(0)) / (lamb/100);
+%     F_prime = (F(lamb/1e2) - F(0)) / (lamb/1e2);
 %     T = @(lambda) F(0) + epsilon*lambda*F_prime;
+    % because we don't need more dimensions than 1.
 
 
     %Initialize lamb to something appropriate.
     lamb = 1;
+    F0 = F(0);       %for debugging.
+    Flamb = F(lamb); %for debugging.
     while isinf(F(lamb)) || F(0)<F(lamb) %If F'(0) is drastic we require
         lamb = lamb / 16;                %lamb to be small.
     end
@@ -98,11 +106,17 @@ end
    
 
 % Final error check: did linesearch work?
+f_old = f(x);        %for debugging
+f_new = f(x+lamb*d); %for debugging
 if isnan(f(x+lamb*d))
     error('Bad job of the line search! (f diverged)')
 end
 if f(x+lamb*d) > f(x)
     error('Bad job of the line search! (f increased)')
+end
+
+if lamb < 1e-12 %not a descent direction?
+    [lamb, ls_iters] = linesearch(f,x,-d);
 end
 
 end
