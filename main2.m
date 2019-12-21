@@ -18,11 +18,11 @@ alpha = @(x) h1(x)^2 + h2(x)^2 + h3(x)^2; %EV ^3.
 
 %_________________________________________________________________________
 %___________________  SOLVER  ____________________________________________
-mu = [1e1 1e2 1e3 1e4 1e5];
-%x = [-2 2 2 -1 -1]';
+mu = [1e1]; % 1e2 1e3 1e4 1e5];
+x = [-2 2 2 -1 -1]';
 %x = [-3 0 -3 0 0]';
-%x = [0 -3 0 0 0]';   %95
-x = [0 0 0 -3 3]';   %120
+%x = [0 -3 0 0 0]';   %"95"
+x = [0 0 0 -3 3]';   %"120"
 
 x1 = x; %our solver
 x2 = x; %fmincon (to compare with)
@@ -51,10 +51,6 @@ For this question, let's use statistics the automated tests below.
 
 ... (TODO)
 
-... jag f?rs?ker f? alla fall att g?... men 10% sad_rate... i dessa fall
-?r jag vid ett lokalt minimum men jag lyckas inte avsluta.
-
-
 %}
 
 
@@ -77,16 +73,16 @@ for b = 1:n
 for c = 1:n
 for d = 1:n
 for e = 1:n
-    index = index + 1;    
+    index = index + 1;
     x = [vals(a); vals(b); vals(c); vals(d); vals(e)];
     x2 = x; %fmincon
     
     converged = 1;
     for i = 1:length(mu)
         aux = @(x) f(x) + mu(i)*alpha(x); 
-        x2 = [0 0 0 0 0]';
-        exit = 1;
-        %[x2, ~, exit] = fmincon(aux, x2);
+        %x2 = [0 0 0 0 0]';
+        %exit = 1;
+        [x2, ~, exit] = fmincon(aux, x2);
         try
             x = nonlinearmin(aux, x, 'BFGS', 1e-6, 0);
         catch
@@ -118,3 +114,40 @@ end
 [min, i] = min(f_vals);
 sad_rate = didnt_converge / length(f_vals) %percentage not converge
 %}
+
+%{
+[CONVERGENCE PROBLEM DISCUSSION]
+This problem was by far the most difficult one, and we spent hours trying
+to manage all cases, but in the end the best convergence rate we managed
+was 90%. The remaining 10% triggered the provided linesearch errors, but,
+we rather see it as a problem of stopping criteria. By debugging we found
+that the following happened:
+    All values had reasonable size until just before it crashed in
+linesearch. The problem was that we were in a local optimum(*). Thus, the
+direction was not a descent direction, and linesearch, requiring 
+F(lamb) < F(0), looped until lambda was reduced to ~1e-20. Still, it was
+not a descent direction and an error was triggered: F(lamb) > F(0).
+Alternatively, lambda had become so small that F(lamb)==F(0), not
+triggering the first warning but instead the second: isnan(f(x+lamb*d)),
+since the product lamb*d was equal to NaN.
+
+EV:
+    We improved the convergence rate by also searching in the 
+    direction (-d) when lambda was smaller than 1e-12,
+    But as we said, we were in a local minimum, so...
+        Hmm... not explored fully what happened... It continued for more
+        iterations??? (EV TODO).  men b?ttre att ba l?mna in --> f?
+        feedback.
+
+(*) We could see that we were in a local optimum, since f was 1 and 
+grad(aux,y) = 0. However, ||grad|| was a bit larger than the stopping
+tolerance.
+EV:
+    This sounds easy to fix. We tried but failed.
+    - Increasing tol caused it to stop in the next problem (with a larger mu)
+    instead.
+    - We tried stopping conditions INSIDE the inner for-loop. Then what
+    happened?
+%}
+
+

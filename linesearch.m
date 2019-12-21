@@ -50,7 +50,7 @@ if option == 2
 %     "To calculate the search directions you may use the numerical
 %     differentiation in the file grad.m. Do not use it directly in the 
 %     line search subroutine as the fixed precision in grad.m may not be 
-%     enough there in some cases.                                       --> Hmm, OK s?h?r? T = blabla*grad()
+%     enough there in some cases."                                      --> Hmm, OK s?h?r? T = blabla*grad()
     % --> EVEV Alternative: After initiating lamb (as below), do:       --> B?TTRE: golden section!!!
 %     F_prime = (F(lamb/1e2) - F(0)) / (lamb/1e2);
 %     T = @(lambda) F(0) + epsilon*lambda*F_prime;
@@ -108,6 +108,8 @@ end
 % Final error check: did linesearch work?
 f_old = f(x);        %for debugging
 f_new = f(x+lamb*d); %for debugging
+step = lamb*d;       %for debugging
+
 if isnan(f(x+lamb*d))
     error('Bad job of the line search! (f diverged)')
 end
