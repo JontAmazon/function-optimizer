@@ -27,9 +27,6 @@ if option == 1
             break;
         end
     end
-    % TODO_1 = testa ||grad|| < tol
-    % TODO_2 = testa approximera F_prime
-    %while 
 
     %Golden section algorithm.
     ls_iters = 10;
@@ -94,33 +91,22 @@ if option == 2
             lamb = lamb * alpha;
         else
             return %success.
-        end
-        
-        if i == max_iters
-            error('Armijo didnt find a lambda in 1000 iterations...') %never occurs.
-            %error('...now what should we do? ...Newton? Exact linesearch?')
-            %error('...Idk... Lets see if it comes to this...')
-        end
+        end        
     end    
 end        
-   
+
+step = lamb*d;
+if norm(step) < 1e-10
+    return %Minimal step size ==> CONVERGED!
+end
 
 % Final error check: did linesearch work?
-f_old = f(x);        %for debugging
-f_new = f(x+lamb*d); %for debugging
-step = lamb*d;       %for debugging
-
 if isnan(f(x+lamb*d))
     error('Bad job of the line search! (f diverged)')
 end
 if f(x+lamb*d) > f(x)
     error('Bad job of the line search! (f increased)')
 end
-
-if lamb < 1e-12 %not a descent direction?
-    [lamb, ls_iters] = linesearch(f,x,-d);
-end
-
 end
 
 % Skip:

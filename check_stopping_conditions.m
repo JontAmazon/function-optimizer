@@ -13,7 +13,7 @@ tol4 = tol * 100;
 tol5 = tol * 100;
 
 stop = 0;
-please_print = 0; %for debugging.
+please_print = 0;
 
 % a) tol1 > ||grad(f,x)||
 x_k = x_history(:, len);

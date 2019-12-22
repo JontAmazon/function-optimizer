@@ -10,12 +10,12 @@ f = @(x) (x(1)-5)^2 + (x(2)-3)^2;
 %(alpha, eg. barrier function, is defined in barrier.m)
 %(auxiliary function is defined in the for loop).
 
-epsilon = [10, 1, 0.1, 0.01, 0.001, 1e-3, 1e-4];
+epsilon = [10, 1, 0.1, 0.01, 0.001, 1e-3, 1e-4, 1e-5 1e-6 1e-7];
 x = [0; 0];
-%x = [-1e7; -1e7];  :)
-%x = [0; -1e7];  :)
-%x = [1e7; -1e7];  :)
-%x = [-2e7; -1e7];  :)
+%x = [-1e7; -1e7];  %:)
+%x = [0; -1e7];  %:)
+%x = [1e7; -1e7];  %:)
+%x = [-2e7; -1e7];  %:)
 
 % Debugging:
 f_history = zeros(length(epsilon), 1);     %f should decrease
